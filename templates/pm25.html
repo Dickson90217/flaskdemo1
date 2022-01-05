@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        th {
+            background-color: tomato;
+            color: #fff;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- url -->
+    <form action="" method="POST">
+        <!-- <button type="submit">排序</button> -->
+
+        <input type="submit" value="大到小" name="reverse">
+        <input type="submit" value="小到大" name="ascending">
+
+    </form>
+    <table border="1">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                <th>{{col}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tds in values %}
+            <tr>
+                {% for td in tds %}
+                <td>{{td}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
