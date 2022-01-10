@@ -1,6 +1,8 @@
+from types import MethodDescriptorType
 from flask import Flask, render_template, request, make_response
 from datetime import datetime
 from pm25 import get_pm25
+import json
 
 app = Flask(__name__)
 
@@ -15,6 +17,22 @@ def index():
     }
 
     return render_template('./index.html', context=context)
+
+
+@app.route('/pm25-data', methods=['GET', 'POST'])
+def get_pm25_json():
+    columns, datas = get_pm25()
+    site = [data[1] for data in datas]
+    pm25 = [data[-1] for data in datas]
+
+    data = {'columns': columns, 'site': site, 'pm25': pm25}
+    return json.dumps(data, ensure_ascii=False)
+
+
+@app.route('/pm25-charts')
+def pm25_charts():
+
+    return render_template('/pm25-charts.html')
 
 
 @app.route('/pm25', methods=['GET', 'POST'])
