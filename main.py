@@ -1,7 +1,10 @@
 from types import MethodDescriptorType
 from flask import Flask, render_template, request, make_response
 from datetime import datetime
-from pm25 import get_pm25
+from flask.helpers import url_for
+
+import pandas as pd
+from pm25 import get_pm25, get_six_pm25
 import json
 
 app = Flask(__name__)
@@ -21,11 +24,16 @@ def index():
 
 @app.route('/pm25-data', methods=['GET', 'POST'])
 def get_pm25_json():
-    columns, datas = get_pm25()
-    site = [data[1] for data in datas]
-    pm25 = [data[-1] for data in datas]
+    columns, values = get_pm25()
+    site = [data[1] for data in values]
+    pm25 = [data[-1] for data in values]
+    print(site, pm25)
+    date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    datas = [[value[1], value[-1]]for value in values]
+    datas = sorted(datas, key=lambda x: x[-1])
 
-    data = {'columns': columns, 'site': site, 'pm25': pm25}
+    data = {'columns': columns, 'site': site, 'pm25': pm25,
+            'hightest': datas[-1], 'lowest': datas[0], 'date': date}
     return json.dumps(data, ensure_ascii=False)
 
 
@@ -33,6 +41,14 @@ def get_pm25_json():
 def pm25_charts():
 
     return render_template('/pm25-charts.html')
+
+
+@app.route('/six-pm25', methods=['GET', 'POST'])
+def get_pm25_six_json():
+    datas = get_six_pm25()
+    data = {'city': list(datas.keys()), 'pm25': list(datas.values())}
+
+    return json.dumps(data, ensure_ascii=False)
 
 
 @app.route('/pm25', methods=['GET', 'POST'])
