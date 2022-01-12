@@ -4,7 +4,7 @@ from datetime import datetime
 from flask.helpers import url_for
 
 import pandas as pd
-from pm25 import get_pm25, get_six_pm25
+from pm25 import get_pm25, get_six_pm25, get_county_pm25
 import json
 
 app = Flask(__name__)
@@ -20,6 +20,18 @@ def index():
     }
 
     return render_template('./index.html', context=context)
+
+
+@app.route('/county-pm25/<string:county>')
+def get_county_pm25_json(county):
+    datas = get_county_pm25(county)
+
+    data = {
+        'title': county,
+        'county': [data[0] for data in datas],
+        'pm25': [data[1] for data in datas],
+    }
+    return json.dumps(data, ensure_ascii=False)
 
 
 @app.route('/pm25-data', methods=['GET', 'POST'])

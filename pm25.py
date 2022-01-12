@@ -4,6 +4,13 @@ url = 'https://data.epa.gov.tw/api/v1/aqx_p_02?limit=1000&api_key=9be7b239-557b-
 df = pd.read_csv(url).dropna()
 
 
+def get_county_pm25(county):
+    county_pm25 = df.groupby('county').get_group(
+        county)[['Site', 'PM25']].values.tolist()
+
+    return county_pm25
+
+
 def get_six_pm25():
     df = pd.read_csv(url).dropna()
     six_pm25 = {}
