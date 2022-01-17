@@ -4,7 +4,7 @@ from datetime import datetime
 from flask.helpers import url_for
 
 import pandas as pd
-from pm25 import get_pm25, get_six_pm25, get_county_pm25
+from pm25 import get_county, get_pm25, get_six_pm25, get_county_pm25, get_county
 import json
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ def index():
     return render_template('./index.html', context=context)
 
 
-@app.route('/county-pm25/<string:county>')
+@app.route('/county-pm25/<string:county>', methods=['GET', 'POST'])
 def get_county_pm25_json(county):
     datas = get_county_pm25(county)
 
@@ -51,8 +51,9 @@ def get_pm25_json():
 
 @app.route('/pm25-charts')
 def pm25_charts():
+    countys = get_county()
 
-    return render_template('/pm25-charts.html')
+    return render_template('/pm25-charts.html', countys=countys)
 
 
 @app.route('/six-pm25', methods=['GET', 'POST'])
